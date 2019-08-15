@@ -34,6 +34,12 @@
   void rcCh6Change() { rcChannelChange(5); }
   
   void rcSetupPwm() {
+    noInterrupts();  // Turn off interrupts
+        
+    #if CHANNELS > 6
+      #error It is not yet possible to use more than 6 channels in PWM_ mode!
+    #endif
+    
     #if CHANNELS > 0
       attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(RC_PINS[0]), rcCh1Change, CHANGE);
     #endif
@@ -54,11 +60,11 @@
       attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(RC_PINS[4]), rcCh5Change, CHANGE);
     #endif
 
-    #if CHANNELS == 6
+    #if CHANNELS > 5
       attachPinChangeInterrupt(digitalPinToPinChangeInterrupt(RC_PINS[5]), rcCh6Change, CHANGE);
-    #else
-      #error It is not yet possible to use more than 6 channels in PWM_ mode!
     #endif
+
+    interrupts();  // Turn on interrupts
   }
 
 //  uint16_t adjust(uint16_t diff, uint8_t ch) {

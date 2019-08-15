@@ -6,6 +6,12 @@
  * just a simple USB cable.
  * 
  *  GregNau    2015-2019
+ *  
+ ***  
+ *  set-date for Nvidia Nano based DonkeyCar
+ *  using Beetle USB Dev Board
+ *  N6WXD      2019
+ ****
  */
 
 
@@ -13,10 +19,10 @@
 //  (Wiki: http://github.com/wireless-rc-adapter/wireless-rc-adapter/wiki)
 
 // >>> Input signal modulation (uncomment only one!) <<<
-//#define PWM_RECEIVER  // Enable Pulse Width Modulation receiver
+#define PWM_RECEIVER  // Enable Pulse Width Modulation receiver
 //#define PPM_RECEIVER  // Enable Pulse Position Modulation receiver
 
-//#define CHANNELS 8  // Override the default 6 channels (PPM max: 8, PWM max: 6)
+//#define CHANNELS 2  // Override the default 6 channels (PPM max: 8, PWM max: 6)
 
 // >>> Serial-Debug options for troubleshooting <<<
 //#define SERIAL_DEBUG  // Enable Serial Debug by uncommenting this line
@@ -40,6 +46,10 @@
 // >>> Fixes, workarounds, etc <<<
 //#define FUTABA  // Futaba PPM fix (disables calibration!)
 //#define COMPAT_FIX  // In case of joystick issues, try to enable this option. (eg. Aerofly sim)
+
+// >>> Watchdog <<<
+#define ENABLE_WATCHDOG   // Enable watchdog timer (auto reset)
+#include <avr/wdt.h>
 
 // End of Configuration options
 
@@ -119,19 +129,23 @@ uint8_t tx_shared_flags = 0;
 // Setup function
 void setup() {
   initLed();  // Configure and init the leds on the board
-  readMem();  // Read calibration data from eeprom
-
+  ledOn();    // LED on
+  
   #if defined(SERIAL_DEBUG)
     initSerial();  // Start serial debug output
   #endif
-
+  
+  readMem();  // Read calibration data from eeprom
+  
   #if defined(PPM_RECEIVER)
     rcSetupPpm();  // Attach interrupt timer to PPM pin
   #elif defined(PWM_RECEIVER)
     rcSetupPwm();  // Attach interrupt timers to PWM pins
   #endif
 
-  delay(250);  // Give signals some time to settle...
+  // THIS BLOCKS!
+  blinkLed(10, 100); // Give signals some time to settle...
+//  delay(250);  // Give signals some time to settle...
 
   // Waits here until valid signal on CAL_CHANNEL
   rcCalibrate();  // Check if calibration necessary or triggered with full throttle
@@ -139,6 +153,11 @@ void setup() {
   #if !defined(SERIAL_DEBUG)
     initJoystick();  // Setup joystick output
     startJoystick();  // Start joystick output
+    
+    #if defined(ENABLE_WATCHDOG)
+      //watchdog timer with 4 Seconds time out
+      wdt_enable(WDTO_4S);
+    #endif
   #endif
 }
 
@@ -151,5 +170,11 @@ void loop() {
     rcPrintChannels();  // Print RAW channel values on serial terminal.
   #else
     outputJoystick();  // Output channels where there is new data
+    fadeLed();
+    
+    #if defined(ENABLE_WATCHDOG)
+      wdt_reset();
+    #endif
+    
   #endif
 }

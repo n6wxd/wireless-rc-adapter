@@ -120,12 +120,15 @@
     
     // Wait here until valid signal on CAL_CHANNEL pin
     while (!rc_values[CAL_CHANNEL-1] && rc_values[CAL_CHANNEL-1] < 360) {
+      rcProcessPwm();
+      waveLed(50);
       #if defined(SERIAL_DEBUG)
         uint32_t  curtime = millis();
         
         if (curtime >= nexttime) {
             Serial.println("NO SIGNAL ON CAL_CHANNEL!");
-          
+            Serial.print("  Cal Channel Value:");
+            Serial.println(rc_values[CAL_CHANNEL-1]);
           nexttime = curtime + 1000;
         }
       #endif
