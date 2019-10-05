@@ -115,7 +115,8 @@
   
   bool checkIfCal() {
     #if defined(SERIAL_DEBUG)
-      uint32_t nexttime = millis();
+      uint32_t nexttime = millis() + 1000;
+      Serial.println("CHECKING CALIBRATION...  ");
     #endif
     
     // Wait here until valid signal on CAL_CHANNEL pin
@@ -126,7 +127,9 @@
         uint32_t  curtime = millis();
         
         if (curtime >= nexttime) {
-            Serial.println("NO SIGNAL ON CAL_CHANNEL!");
+            Serial.print("NO SIGNAL ON CAL_CHANNEL ");
+            Serial.print(CAL_CHANNEL);
+            Serial.println(" !");
             Serial.print("  Cal Channel Value:");
             Serial.println(rc_values[CAL_CHANNEL-1]);
           nexttime = curtime + 1000;
@@ -138,11 +141,17 @@
     for (uint8_t d=0;d<CHANNELS;d++) {
       if (rc_min_values[d] < 360 || rc_max_values[d] > 2500
           || rc_min_values[d] > 1500 || rc_max_values[d] < 1500) {
+        #if defined(SERIAL_DEBUG)
+          Serial.println("COMPLETE.");
+        #endif
         return true;
       }
     }
     
     if (rc_values[2] >= 1600) {
+      #if defined(SERIAL_DEBUG)
+        Serial.println("COMPLETE.");
+      #endif
       return true;
     }
     else {
@@ -176,7 +185,8 @@
       Serial.print("MIN:");
       Serial.print(str);
       Serial.println();
-        
+      Serial.println("COMPLETE.");
+      Serial.println();
     }
   #endif
 #endif

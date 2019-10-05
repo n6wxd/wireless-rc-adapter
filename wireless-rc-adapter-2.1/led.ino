@@ -26,7 +26,7 @@ void initLed() {
     TXLED0;  // Just turn off initially
     RXLED0;  // Both of them
   #elif defined(ARDUINO_AVR_MICRO) || defined(ARDUINO_AVR_LEONARDO)
-    #define RXLED 17  // RXLED is on pin 17
+    #define RXLED 13  // RXLED is on pin 17
     #define TXLED 30  // TXLED is on pin 30
 
     pinMode(RXLED, OUTPUT);

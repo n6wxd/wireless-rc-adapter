@@ -40,7 +40,7 @@
     #define INCLUDE_RX_AXIS false
     #define INCLUDE_RY_AXIS false
     #define INCLUDE_RZ_AXIS false
-    #define BUTTON_COUNT 1
+    #define BUTTON_COUNT 2
   #elif CHANNELS == 4
     #define INCLUDE_X_AXIS true
     #define INCLUDE_Y_AXIS true
@@ -166,10 +166,17 @@
                   else if (rc_values[i] > STICK_CENTER && keyb_flag) {
                     Keyboard.write(BTN0_KEY_HIGH);
                     keyb_flag = false;
-                  }
+                 }
                 #else
-                  Joystick.setButton(0, rc_values[i] < STICK_CENTER ? 0 : 1);
+                    #if BUTTON_COUNT >= 1
+                      Joystick.setButton(0, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 1 : 0);
+                    #endif
+                    #if BUTTON_COUNT == 2
+                      Joystick.setButton(1, rc_values[i] > STICK_CENTER + STICK_DEADZONE ? 1 : 0);
+                    #endif
+ //                 Joystick.setButton(0, rc_values[i] < STICK_CENTER ? 0 : 1);
                 #endif
+                 Joystick.setZAxis(rc_values[i]);
                 break;
             }
             
@@ -214,7 +221,7 @@
                     keyb_flag = false;
                   }
                 #else
-                  Joystick.setButton(0, rc_values[i] < STICK_CENTER ? 0 : 1);
+                   Joystick.setButton(0, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 0 : 1);
                 #endif
                 break;
             }
@@ -247,7 +254,7 @@
                     keyb_flag = false;
                   }
                 #else
-                  Joystick.setButton(0, rc_values[i] < STICK_CENTER ? 0 : 1);
+                  Joystick.setButton(0, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 0 : 1);
                 #endif
                 break;
             }
@@ -280,7 +287,7 @@
                     keyb_flag = false;
                   }
                 #else
-                  Joystick.setButton(0, rc_values[i] < STICK_CENTER ? 0 : 1);
+                  Joystick.setButton(0, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 0 : 1);
                 #endif
                 break;
               case 6:  // CH 7
@@ -294,7 +301,7 @@
                     keyb_flag = false;
                   }
                 #else
-                  Joystick.setButton(1, rc_values[i] < STICK_CENTER ? 0 : 1);
+                  Joystick.setButton(1, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 0 : 1);
                 #endif
                 break;
             }
@@ -330,7 +337,7 @@
                     keyb_flag = false;
                   }
                 #else
-                  Joystick.setButton(0, rc_values[i] < STICK_CENTER ? 0 : 1);
+                  Joystick.setButton(0, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 0 : 1);
                 #endif
                 break;
               case 7:  // CH 8
@@ -344,7 +351,7 @@
                     keyb_flag = false;
                   }
                 #else
-                  Joystick.setButton(1, rc_values[i] < STICK_CENTER ? 0 : 1);
+                  Joystick.setButton(1, rc_values[i] < STICK_CENTER - STICK_DEADZONE ? 0 : 1);
                 #endif
                 break;
             }

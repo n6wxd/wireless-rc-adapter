@@ -22,7 +22,7 @@
 #define PWM_RECEIVER  // Enable Pulse Width Modulation receiver
 //#define PPM_RECEIVER  // Enable Pulse Position Modulation receiver
 
-//#define CHANNELS 2  // Override the default 6 channels (PPM max: 8, PWM max: 6)
+#define CHANNELS 3  // Override the default 6 channels (PPM max: 8, PWM max: 6)
 
 // >>> Serial-Debug options for troubleshooting <<<
 //#define SERIAL_DEBUG  // Enable Serial Debug by uncommenting this line
@@ -48,8 +48,7 @@
 //#define COMPAT_FIX  // In case of joystick issues, try to enable this option. (eg. Aerofly sim)
 
 // >>> Watchdog <<<
-#define ENABLE_WATCHDOG   // Enable watchdog timer (auto reset)
-#include <avr/wdt.h>
+//#define ENABLE_WATCHDOG   // Enable watchdog timer (auto reset)
 
 // End of Configuration options
 
@@ -94,7 +93,7 @@
 #if defined(FUTABA)
   #define CAL_DISABLE  // Disable calibration if custom center and halfway settings are configured
   #if !defined(STICK_CENTER)
-    #define STICK_CENTER 1530
+    #define STICK_CENTER 1500
   #endif
   #if !defined(STICK_HALFWAY)
     #define STICK_HALFWAY 450
@@ -120,6 +119,14 @@
   #endif
 #endif
 
+#if defined(ENABLE_WATCHDOG)
+  #include <avr/wdt.h>
+#endif
+
+#if !defined(STICK_DEADZONE)
+  #define STICK_DEADZONE 20
+#endif
+
 // Global variables
 const uint8_t FLAGS[8] = {1, 2, 4, 8, 16, 32, 64, 128};  // Channel value position flags
 volatile uint16_t rc_values[CHANNELS] = {0};  // Actual channel values
@@ -130,6 +137,7 @@ uint8_t tx_shared_flags = 0;
 void setup() {
   initLed();  // Configure and init the leds on the board
   ledOn();    // LED on
+  delay(1000);
   
   #if defined(SERIAL_DEBUG)
     initSerial();  // Start serial debug output
