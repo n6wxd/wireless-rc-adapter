@@ -40,7 +40,11 @@
     #define INCLUDE_RX_AXIS false
     #define INCLUDE_RY_AXIS false
     #define INCLUDE_RZ_AXIS false
-    #define BUTTON_COUNT 2
+    #if defined(TRAXXAS_CH3_MOD)
+      #define BUTTON_COUNT 2
+    #else
+      #define BUTTON_COUNT 1
+   #endif
   #elif CHANNELS == 4
     #define INCLUDE_X_AXIS true
     #define INCLUDE_Y_AXIS true

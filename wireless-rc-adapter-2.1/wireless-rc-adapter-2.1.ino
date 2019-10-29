@@ -50,6 +50,15 @@
 // >>> Watchdog <<<
 //#define ENABLE_WATCHDOG   // Enable watchdog timer (auto reset)
 
+// >>> Receiver options <<<
+// Comment out to use a standard (unmodified) 3CH transmitter
+//#define TRAXXAS_CH3_MOD     // Uncomment to enable Traxxas 3-channel Trasmitter 2-way switch modification
+                            // two buttons (Button0 and Button1) will be created in the HID from CH3
+                            
+
+#define STICK_DEADZONE  25  // Set the varience of the PWM to be ignored
+                            // Currently on used for Button emulation
+
 // End of Configuration options
 
 
